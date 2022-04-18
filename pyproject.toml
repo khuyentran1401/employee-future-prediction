@@ -9,10 +9,15 @@ python = "^3.8"
 dvc = "^2.10.0"
 hydra-core = "^1.1.1"
 pdoc3 = "^0.10.0"
+shap = "0.39"
+patsy = "0.5.2"
+xgboost = "1.4.2"
+yellowbrick = "1.2.1"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.5"
 pre-commit = "^2.17.0"
+black = {version = "^22.3.0", allow-prereleases = true}
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

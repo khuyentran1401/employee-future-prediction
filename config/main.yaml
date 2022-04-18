@@ -4,14 +4,22 @@ defaults:
   - _self_
 
 raw: 
-  path: data/raw/sample.csv
+  path: data/raw/Social_Network_Ads.csv
 
 processed:
   dir: data/processed
-  name: processed.csv
-  path: ${processed.dir}/${processed.name}
+  target: 
+    name: target.csv
+    path: ${processed.dir}/${processed.target.name}
+  features:
+    name: features.csv
+    path: ${processed.dir}/${processed.features.name}
 
 final:
   dir: data/final
   name: final.csv
   path: ${final.dir}/${final.name}
+
+map_columns:
+  Gender[Female]: gender-female
+  Gender[Male]: gender-male

@@ -1,3 +1,6 @@
-use_columns: 
-  - col1
-  - col2
+target: Purchased
+features:
+  - Gender
+  - Age
+  - EstimatedSalary
+has_intercept: false
