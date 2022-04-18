@@ -1,0 +1,35 @@
+[tool.poetry]
+name = "predict-ad-clicks"
+version = "0.1.0"
+description = ""
+authors = ["Khuyen Tran"]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+dvc = "^2.10.0"
+hydra-core = "^1.1.1"
+pdoc3 = "^0.10.0"
+
+[tool.poetry.dev-dependencies]
+pytest = "^6.2.5"
+pre-commit = "^2.17.0"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.black]
+line-length = 79
+include = '\.pyi?$'
+exclude = '''
+/(
+	\.git
+| \.hg
+| \.mypy_cache
+| \.tox
+| \.venv
+| _build
+| buck-out
+| build   
+)/ 
+'''
