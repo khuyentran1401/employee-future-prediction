@@ -23,7 +23,7 @@ jobs:
         uses: EndBug/add-and-commit@v9
         with:
           message: Add Colab badge
-          push: false
+          push: true
   black:
     name: Black Check for Jupyter notebooks
     runs-on: ubuntu-latest
