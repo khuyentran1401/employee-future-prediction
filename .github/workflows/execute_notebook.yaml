@@ -1,26 +1,25 @@
-name: Execute notebook
-
+name: Example Workflow
 on: [push]
 
 jobs:
-  run:
+  badges:
+    name: Example Badge Job
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v1
-    - name: Set up Python
-      uses: actions/setup-python@v1
-    - uses: yaananth/run-notebook@v1
-      env:
-        RUNNER: ${{ toJson(runner) }}
-        GITHUB: ${{ toJson(github) }}
-      with:
-        notebook: "notebooks/analyze_results.ipynb"
-        params: "notebooks/params.json"
-        isReport: False
-    - uses: actions/upload-artifact@master
-      if: always()
-      with:
-        name: output
-        path: ${{ RUNNER.temp }}/nb-runner
-      env:
-        RUNNER: ${{ toJson(runner) }}
+      - name: Checkout first
+        id: checkout
+        uses: actions/checkout@v2
+
+      - name: Add/Update badges
+        id: badges
+        uses: trsvchn/colab-badge-action@v4
+        with:
+          check: "all"
+          target_branch: main
+          target_repository: user/user-repo
+          update: true
+
+      - name: Use your favorite commit&push action here
+        uses: actions-js/push@master
+        with:
+          github_token: ${{ secrets.TOKEN }}
