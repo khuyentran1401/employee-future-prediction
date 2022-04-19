@@ -3,10 +3,10 @@ on: [push]
 
 jobs:
   add_badges:
-    name: Example Badge Job
+    name: Add Google Colab badge to notebook
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout first
+      - name: Checkout 
         id: checkout
         uses: actions/checkout@v2
 
@@ -28,6 +28,10 @@ jobs:
     name: Black Check for Jupyter notebooks
     runs-on: ubuntu-latest
     steps: 
+      - name: Checkout 
+        id: checkout
+        uses: actions/checkout@v2
+
       - name: black
         uses: jpetrucciani/black-check@master
         with:
