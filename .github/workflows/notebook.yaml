@@ -61,6 +61,11 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN}}
           output_dir: './reports/'
 
+      - name: Check permissions
+        run: |
+          cd .git/objects
+          ls -al
+        
       - name: Add, commit, and push changes
         uses: EndBug/add-and-commit@v9
         with:
