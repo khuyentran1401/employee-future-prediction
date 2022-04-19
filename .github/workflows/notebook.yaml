@@ -1,4 +1,4 @@
-name: Add Colab Badge
+name: Adjust notebook
 on: [push]
 
 jobs:
