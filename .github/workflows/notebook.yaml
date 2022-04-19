@@ -2,7 +2,7 @@ name: Add Colab Badge
 on: [push]
 
 jobs:
-  badges:
+  add_badges:
     name: Example Badge Job
     runs-on: ubuntu-latest
     steps:
@@ -23,4 +23,19 @@ jobs:
         uses: EndBug/add-and-commit@v9
         with:
           message: Add Colab badge
+          push: false
+  black:
+    name: Black Check for Jupyter notebooks
+    runs-on: ubuntu-latest
+    steps: 
+      - name: black
+        uses: jpetrucciani/black-check@master
+        with:
+          path: '.'
+          black_flags: '--exclude ./env/'
+      
+      - name: Add, commit, and push changes
+        uses: EndBug/add-and-commit@v9
+        with:
+          message: black check
           push: true
