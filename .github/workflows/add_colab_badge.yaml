@@ -1,4 +1,4 @@
-name: Example Workflow
+name: Add Colab Badge
 on: [push]
 
 jobs:
@@ -16,10 +16,11 @@ jobs:
         with:
           check: "all"
           target_branch: master
-          target_repository: khuyentran/employee-future-prediction
+          target_repository: khuyentran1401/employee-future-prediction
           update: true
       
-      - uses: EndBug/add-and-commit@v9
+      - name: Add, commit, and push changes
+        uses: EndBug/add-and-commit@v9
         with:
           message: Add Colab badge
           push: true
