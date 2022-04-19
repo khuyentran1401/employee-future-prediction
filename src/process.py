@@ -1,8 +1,11 @@
 import hydra
 import pandas as pd
+from feature_engine.encoding import RareLabelEncoder
 from hydra.utils import to_absolute_path as abspath
 from omegaconf import DictConfig
 from patsy import dmatrices
+from pyparsing import replace_with
+from sklearn.model_selection import train_test_split
 
 
 def get_data(raw_path: str):
@@ -10,9 +13,13 @@ def get_data(raw_path: str):
     return data
 
 
-def get_features_without_intercept(
-    target: str, features: list, data: pd.DataFrame
-):
+def encode_rare_labels(data: pd.DataFrame):
+
+    rare_encoder = RareLabelEncoder(variables=["City"], replace_with="Other")
+    return rare_encoder.fit_transform(data)
+
+
+def get_features(target: str, features: list, data: pd.DataFrame):
     feature_str = " + ".join(features)
     y, X = dmatrices(
         f"{target} ~ {feature_str} - 1", data=data, return_type="dataframe"
@@ -20,14 +27,9 @@ def get_features_without_intercept(
     return y, X
 
 
-def get_features_with_intercept(
-    target: str, features: list, data: pd.DataFrame
-):
-    feature_str = " + ".join(features)
-    y, X = dmatrices(
-        f"{target} ~ {feature_str}", data=data, return_type="dataframe"
-    )
-    return y, X
+def rename_columns(X: pd.DataFrame):
+    X.columns = X.columns.str.replace("[", "_").str.replace("]", "")
+    return X
 
 
 @hydra.main(config_path="../config", config_name="main")
@@ -35,18 +37,20 @@ def process_data(config: DictConfig):
     """Function to process the data"""
 
     data = get_data(abspath(config.raw.path))
+    processed_data = encode_rare_labels(data)
+    y, X = get_features(
+        config.process.target, config.process.features, processed_data
+    )
 
-    if config.process.has_intercept:
-        y, X = get_features_with_intercept(
-            config.process.target, config.process.features, data
-        )
-    else:
-        y, X = get_features_without_intercept(
-            config.process.target, config.process.features, data
-        )
+    X = rename_columns(X)
+    X_train, X_test, y_train, y_test = train_test_split(
+        X, y, test_size=0.2, random_state=7
+    )
 
-    y.to_csv(abspath(config.processed.target.path), index=False)
-    X.to_csv(abspath(config.processed.features.path), index=False)
+    X_train.to_csv(abspath(config.processed.X_train.path), index=False)
+    X_test.to_csv(abspath(config.processed.X_test.path), index=False)
+    y_train.to_csv(abspath(config.processed.y_train.path), index=False)
+    y_test.to_csv(abspath(config.processed.y_test.path), index=False)
 
 
 if __name__ == "__main__":

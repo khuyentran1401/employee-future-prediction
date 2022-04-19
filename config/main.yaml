@@ -4,22 +4,32 @@ defaults:
   - _self_
 
 raw: 
-  path: data/raw/Social_Network_Ads.csv
+  path: data/raw/Employee.csv
 
 processed:
   dir: data/processed
-  target: 
-    name: target.csv
-    path: ${processed.dir}/${processed.target.name}
-  features:
-    name: features.csv
-    path: ${processed.dir}/${processed.features.name}
+  X_train: 
+    name: X_train.csv
+    path: ${processed.dir}/${processed.X_train.name}
+  X_test:
+    name: X_test.csv
+    path: ${processed.dir}/${processed.X_test.name}
+  y_train: 
+    name: y_train.csv
+    path: ${processed.dir}/${processed.y_train.name}
+  y_test:
+    name: y_test.csv
+    path: ${processed.dir}/${processed.y_test.name}  
 
 final:
   dir: data/final
   name: final.csv
   path: ${final.dir}/${final.name}
 
-map_columns:
-  Gender[Female]: gender-female
-  Gender[Male]: gender-male
+model:
+  dir: models
+  name: XGBoost
+  path: ${model.dir}/${model.name}
+
+
+mlflow_tracking_ui: https://dagshub.com/khuyentran1401/employee-future-prediction.mlflow

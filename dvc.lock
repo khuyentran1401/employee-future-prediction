@@ -4,47 +4,47 @@ stages:
     cmd: python src/process.py
     deps:
     - path: config/main.yaml
-      md5: bbc0a112ca577aeab522df8dd6aff570
-      size: 467
+      md5: aa537d42e3ee6091046c11af005ad4ab
+      size: 716
     - path: config/process
-      md5: b8cc25f09c3ed8b8db6e0bcd8f0187dd.dir
-      size: 173
+      md5: d851ce603caeba63f69b38a8b07ea56f.dir
+      size: 225
       nfiles: 2
     - path: data/raw
-      md5: a20114ae69547d67553cb67dd4084ebf.dir
-      size: 10926
+      md5: 4fab2c71b869451ea58f8c4aeb16b2b3.dir
+      size: 195247
       nfiles: 2
     - path: src/process.py
-      md5: d975a78f1fb8b283d99cb27d9ee3cfa9
-      size: 1293
+      md5: 9fc9e32f8872808b44104a7d0832647e
+      size: 1682
     outs:
     - path: data/processed
-      md5: 7d890e16bcc5ee19b0505156c2cd4068.dir
-      size: 10132
-      nfiles: 3
+      md5: 5961fa11f7aee4b7fee8bec728c5acf8.dir
+      size: 172411
+      nfiles: 5
   train_model:
     cmd: python src/train_model.py
     deps:
     - path: config/main.yaml
-      md5: bbc0a112ca577aeab522df8dd6aff570
-      size: 467
+      md5: aa537d42e3ee6091046c11af005ad4ab
+      size: 716
     - path: config/model
-      md5: 2b8a65a0449618b79724d144c45809bc.dir
-      size: 24
+      md5: 5fb7743a501989904fd1d414fd0319da.dir
+      size: 685
       nfiles: 2
     - path: data/processed
-      md5: 7d890e16bcc5ee19b0505156c2cd4068.dir
-      size: 10132
-      nfiles: 3
+      md5: 5961fa11f7aee4b7fee8bec728c5acf8.dir
+      size: 172411
+      nfiles: 5
     - path: src/train_model.py
-      md5: 71b77ee7c992a6edd28b02f402c3662e
-      size: 1430
+      md5: e193544d92b8eba2027dad8bd6d3e420
+      size: 4391
     outs:
     - path: data/final
       md5: 6ffbaaad7b4ac6e1afabed19a80b2560.dir
       size: 0
       nfiles: 1
     - path: models
-      md5: 6ffbaaad7b4ac6e1afabed19a80b2560.dir
-      size: 0
-      nfiles: 1
+      md5: 1def18f8935d121be20d5d92257bfed8.dir
+      size: 23422
+      nfiles: 2

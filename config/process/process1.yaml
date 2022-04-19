@@ -1,6 +1,8 @@
-target: Purchased
+target: LeaveOrNot
 features:
-  - Gender
+  - City
+  - PaymentTier
   - Age
-  - EstimatedSalary
-has_intercept: false
+  - Gender
+  - EverBenched
+  - ExperienceInCurrentDomain

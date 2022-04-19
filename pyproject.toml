@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "predict-ad-clicks"
+name = "employee-future-prediction"
 version = "0.1.0"
 description = ""
 authors = ["Khuyen Tran"]
@@ -10,9 +10,13 @@ dvc = "^2.10.0"
 hydra-core = "^1.1.1"
 pdoc3 = "^0.10.0"
 shap = "0.39"
-patsy = "0.5.2"
 xgboost = "1.4.2"
 yellowbrick = "1.2.1"
+notebook = "^6.4.10"
+mlflow = "^1.25.1"
+dagshub = "^0.1.8"
+hyperopt = "^0.2.7"
+feature-engine = "^1.2.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.5"
