@@ -15,7 +15,7 @@ jupyter:
 # Analyze Results
 
 
-<!--<badge>--><a href="https://colab.research.google.com/github/khuyentran1401/employee-future-prediciton/blob/master/reports/notebooks/analyze_results.md" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a><!--</badge>-->
+<!--<badge>--><a href="https://colab.research.google.com/github/khuyentran1401/employee-future-prediciton/blob/master/notebooks/analyze_results.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a><!--</badge>-->
 
 
 ## Load Data and Model
@@ -23,7 +23,7 @@ jupyter:
 ```python
 from yellowbrick.classifier import ClassificationReport, ConfusionMatrix, ROCAUC
 import joblib 
-import pandas as pd  
+import pandas as pd 
 ```
 
 ```python
