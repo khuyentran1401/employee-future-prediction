@@ -10,11 +10,13 @@ jobs:
         id: checkout
         uses: actions/checkout@v2
 
+      - name: Environment setup
+        uses: actions/setup-python@v1
+        
       - name: Poetry setup
-        uses: ClementWalter/poetry-action@v1
-        with:
-          os: ubuntu-latest
-          python-version: 3.8
+        uses: knowsuchagency/poetry-install@v1
+        env:
+          POETRY_VIRTUALENVS_CREATE: false
 
       - name: Run tests
         run: pytest tests
