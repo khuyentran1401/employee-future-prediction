@@ -7,8 +7,6 @@ from omegaconf import DictConfig
 from patsy import dmatrix
 from xgboost import XGBClassifier
 
-from process import rename_columns
-
 
 def get_inputs():
     """Get inputs from users on streamlit"""
@@ -50,6 +48,11 @@ def add_dummy_data(df: pd.DataFrame):
     }
     dummy_df = pd.DataFrame(rows)
     return pd.concat([df, dummy_df])
+
+
+def rename_columns(X: pd.DataFrame):
+    X.columns = X.columns.str.replace("[", "_").str.replace("]", "")
+    return X
 
 
 def make_predictions(
