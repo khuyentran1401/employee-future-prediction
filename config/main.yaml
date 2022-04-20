@@ -1,5 +1,5 @@
 defaults:
-  - process: process2
+  - process: process1
   - model: model1
   - _self_
 
