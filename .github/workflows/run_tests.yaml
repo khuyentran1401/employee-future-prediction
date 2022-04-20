@@ -12,11 +12,8 @@ jobs:
 
       - name: Environment setup
         uses: actions/setup-python@v1
+        with:
+          python-version: 3.8
         
       - name: Poetry setup
-        uses: knowsuchagency/poetry-install@v1
-        env:
-          POETRY_VIRTUALENVS_CREATE: false
-
-      - name: Run tests
-        run: pytest tests
+        uses: Gr1N/setup-poetry@v7
