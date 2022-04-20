@@ -1,4 +1,4 @@
-name: Merge me!
+name: Merge Pull Requests
 
 on:
   workflow_run:
