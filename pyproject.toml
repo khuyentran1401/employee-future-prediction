@@ -18,6 +18,8 @@ dagshub = "^0.1.8"
 hyperopt = "^0.2.7"
 streamlit = "^1.8.1"
 patsy = "^0.5.2"
+pandera = "^0.10.1"
+pytest-steps = "^1.8.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.5"
