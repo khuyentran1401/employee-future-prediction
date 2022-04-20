@@ -12,6 +12,9 @@ jobs:
 
       - name: Poetry setup
         uses: ClementWalter/poetry-action@v1
+        with:
+          os: ubuntu-latest
+          python-version: 3.8
 
       - name: Run tests
         run: pytest tests
