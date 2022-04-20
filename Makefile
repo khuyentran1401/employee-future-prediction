@@ -1,5 +1,4 @@
-.PHONY: notebook docs
-.EXPORT_ALL_VARIABLES:
+.PHONY: notebook docs tests
 
 install: 
 	@echo "Installing..."
@@ -21,9 +20,6 @@ pull_data:
 
 setup: initialize_git install
 
-test:
-	pytest
-
 docs_view:
 	@echo View API documentation... 
 	pdoc src --http localhost:8080
@@ -37,3 +33,6 @@ clean:
 	find . -type f -name "*.py[co]" -delete
 	find . -type d -name "__pycache__" -delete
 	rm -rf .pytest_cache
+
+test:
+	PYTHONPATH=. pytest

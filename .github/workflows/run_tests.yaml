@@ -1,0 +1,25 @@
+name: Run tests
+on: [push, pull_request]
+
+jobs:
+  add_badges:
+    name: Add Google Colab badge to notebook
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout 
+        id: checkout
+        uses: actions/checkout@v2
+
+  install_pytest:
+    name: Install Pytest
+    runs-on: ubuntu-latest 
+    steps: 
+      - name: install
+        run: pip install pytest
+
+  test_code:
+    name: Test Code
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run tests
+        run: pytest tests
