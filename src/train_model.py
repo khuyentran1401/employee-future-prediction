@@ -58,7 +58,7 @@ def get_objective(
         eval_metric=config.model.eval_metric,
         early_stopping_rounds=config.model.early_stopping_rounds,
     )
-    prediction = model.predict(X_test)
+    prediction = model.predict(X_test.values)
     print(prediction)
     accuracy = accuracy_score(y_test, prediction)
     print("SCORE:", accuracy)

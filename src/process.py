@@ -1,22 +1,14 @@
 import hydra
 import pandas as pd
-from feature_engine.encoding import RareLabelEncoder
 from hydra.utils import to_absolute_path as abspath
 from omegaconf import DictConfig
 from patsy import dmatrices
-from pyparsing import replace_with
 from sklearn.model_selection import train_test_split
 
 
 def get_data(raw_path: str):
     data = pd.read_csv(raw_path)
     return data
-
-
-def encode_rare_labels(data: pd.DataFrame):
-
-    rare_encoder = RareLabelEncoder(variables=["City"], replace_with="Other")
-    return rare_encoder.fit_transform(data)
 
 
 def get_features(target: str, features: list, data: pd.DataFrame):
@@ -37,16 +29,15 @@ def process_data(config: DictConfig):
     """Function to process the data"""
 
     data = get_data(abspath(config.raw.path))
-    processed_data = encode_rare_labels(data)
-    y, X = get_features(
-        config.process.target, config.process.features, processed_data
-    )
+
+    y, X = get_features(config.process.target, config.process.features, data)
 
     X = rename_columns(X)
     X_train, X_test, y_train, y_test = train_test_split(
         X, y, test_size=0.2, random_state=7
     )
 
+    # Save data
     X_train.to_csv(abspath(config.processed.X_train.path), index=False)
     X_test.to_csv(abspath(config.processed.X_test.path), index=False)
     y_train.to_csv(abspath(config.processed.y_train.path), index=False)

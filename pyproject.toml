@@ -16,7 +16,8 @@ notebook = "^6.4.10"
 mlflow = "^1.25.1"
 dagshub = "^0.1.8"
 hyperopt = "^0.2.7"
-feature-engine = "^1.2.0"
+streamlit = "^1.8.1"
+patsy = "^0.5.2"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.5"

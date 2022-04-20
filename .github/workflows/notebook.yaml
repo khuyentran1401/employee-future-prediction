@@ -43,32 +43,5 @@ jobs:
         with:
           message: black check
           push: true
-  
-  convert_to_markdown:
-    name: Convert Notebook to Markdown
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout 
-        id: checkout
-        uses: actions/checkout@v2
 
-      - name: Convert Notebook to Markdown
-        uses: deep5050/autopy-lot@master
-        with:
-          input_type: ipynb
-          output_type: markdown
-          comment_magics: False
-          github_token: ${{ secrets.GITHUB_TOKEN}}
-          output_dir: './reports/'
-
-      - name: Check permissions
-        run: |
-          cd .git/objects
-          ls -al
-        
-      - name: Add, commit, and push changes
-        uses: EndBug/add-and-commit@v9
-        with:
-          message: Convert Notebook to Markdown
-          push: true
       
