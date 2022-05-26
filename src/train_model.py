@@ -100,7 +100,7 @@ def log_metrics(**metrics: dict):
     logger.log_metrics(metrics)
 
 
-@hydra.main(config_path="../config", config_name="main")
+@hydra.main(version_base=None, config_path="../config", config_name="main")
 def train(config: DictConfig):
     """Function to train the model"""
 

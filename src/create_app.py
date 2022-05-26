@@ -51,7 +51,7 @@ def add_dummy_data(df: pd.DataFrame):
 
 
 def rename_columns(X: pd.DataFrame):
-    X.columns = X.columns.str.replace("[", "_").str.replace("]", "")
+    X.columns = X.columns.str.replace("[", "_", regex=True).str.replace("]", "", regex=True)
     return X
 
 
@@ -64,7 +64,6 @@ def make_predictions(
     dummy_X = dmatrix(f"{feature_str} - 1", dummy_df, return_type="dataframe")
     dummy_X = rename_columns(dummy_X)
     real_X = dummy_X.iloc[0, :].values.reshape(1, 8)
-    print(real_X.shape)
     return model.predict(real_X)[0]
 
 
@@ -80,7 +79,7 @@ def write_predictions(config: DictConfig, data: dict, model: XGBClassifier):
             st.write("This employee is predicted to leave in two years.")
 
 
-@hydra.main(config_path="../config", config_name="main")
+@hydra.main(version_base=None, config_path="../config", config_name="main")
 def main(config: DictConfig):
     data = get_inputs()
     model = joblib.load(abspath(config.model.path))

@@ -20,11 +20,11 @@ def get_features(target: str, features: list, data: pd.DataFrame):
 
 
 def rename_columns(X: pd.DataFrame):
-    X.columns = X.columns.str.replace("[", "_").str.replace("]", "")
+    X.columns = X.columns.str.replace("[", "_", regex=True).str.replace("]", "", regex=True)
     return X
 
 
-@hydra.main(config_path="../config", config_name="main")
+@hydra.main(version_base=None, config_path="../config", config_name="main")
 def process_data(config: DictConfig):
     """Function to process the data"""
 
