@@ -12,6 +12,7 @@ with initialize(version_base=None, config_path="../config"):
     FEATURES = config.process.features
     MODEL_PATH = abspath(config.model.path)
 
+
 def get_inputs():
     """Get inputs from users on streamlit"""
     st.title("Predict employee future")
@@ -55,7 +56,9 @@ def add_dummy_data(df: pd.DataFrame):
 
 
 def rename_columns(X: pd.DataFrame):
-    X.columns = X.columns.str.replace("[", "_", regex=True).str.replace("]", "", regex=True)
+    X.columns = X.columns.str.replace("[", "_", regex=True).str.replace(
+        "]", "", regex=True
+    )
     return X
 
 

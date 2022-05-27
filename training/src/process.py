@@ -20,7 +20,9 @@ def get_features(target: str, features: list, data: pd.DataFrame):
 
 
 def rename_columns(X: pd.DataFrame):
-    X.columns = X.columns.str.replace("[", "_", regex=True).str.replace("]", "", regex=True)
+    X.columns = X.columns.str.replace("[", "_", regex=True).str.replace(
+        "]", "", regex=True
+    )
     return X
 
 

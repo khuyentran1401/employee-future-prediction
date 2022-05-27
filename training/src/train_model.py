@@ -148,5 +148,6 @@ def train(config: DictConfig):
         # Save model
         bentoml.picklable_model.save(config.model.name, best_model)
 
+
 if __name__ == "__main__":
     train()

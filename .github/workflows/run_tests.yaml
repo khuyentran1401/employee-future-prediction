@@ -15,7 +15,7 @@ jobs:
           python-version: 3.8
         
       - name: Install packages
-        uses: pip install -r requirements.txt
+        run: pip install -r requirements.txt
 
       - name: Run training tests
         run: pytest training/tests
