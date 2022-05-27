@@ -1,5 +1,4 @@
 import hydra
-
 from process import process_data
 from train_model import train
 

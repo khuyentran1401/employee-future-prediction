@@ -1,6 +1,5 @@
 name: Run tests
 on: [push]
-
 jobs:
   checkout:
     name: Run tests
@@ -11,21 +10,18 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Environment setup
-        uses: actions/setup-python@v1
+        uses: actions/setup-python@2
         with:
           python-version: 3.8
         
-      - name: Install Poetry
-        uses: Gr1N/setup-poetry@v7
+      - name: Install packages
+        uses: pip install -r requirements.txt
 
-      - name: Cache Poetry virtualenv
-        uses: actions/cache@v2
-        with:
-          path: ~/.cache/pypoetry/virtualenvs
-          key: ${{ runner.os }}-poetry-${{ hashFiles('poetry.lock') }}
-      
-      - name: Install dependencies
-        run: poetry install
+      - name: Run training tests
+        run: pytest training/tests
 
-      - name: Run tests
-        run: poetry run pytest tests
+      - name: Serve the app locally
+        run: bentoml serve training/src/create_service.py:service --reload 
+
+      - name: Run app tests
+        run: pytest application/tests

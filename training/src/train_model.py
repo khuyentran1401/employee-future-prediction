@@ -5,18 +5,17 @@ warnings.filterwarnings(action="ignore")
 from functools import partial
 from typing import Callable
 
+import bentoml
 import hydra
-import joblib
 import mlflow
 import numpy as np
 import pandas as pd
+from helper import BaseLogger
 from hydra.utils import to_absolute_path as abspath
 from hyperopt import STATUS_OK, Trials, fmin, hp, tpe
 from omegaconf import DictConfig
 from sklearn.metrics import accuracy_score, f1_score
 from xgboost import XGBClassifier
-
-from helper import BaseLogger
 
 logger = BaseLogger()
 
@@ -147,8 +146,7 @@ def train(config: DictConfig):
         log_metrics(f1_score=f1, accuracy_score=accuracy)
 
         # Save model
-        joblib.dump(best_model, abspath(config.model.path))
-
+        bentoml.picklable_model.save(config.model.name, best_model)
 
 if __name__ == "__main__":
     train()

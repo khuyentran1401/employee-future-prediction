@@ -1,7 +1,6 @@
 import pandas as pd
 from pandera import Check, Column, DataFrameSchema
 from pytest_steps import test_steps
-
 from src.process import get_features, rename_columns
 
 

@@ -5,5 +5,5 @@
 2. Set up the environment:
 ```bash
 make activate
-make setup
+make install
 ```
