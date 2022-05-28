@@ -18,9 +18,16 @@ jobs:
       - name: Install packages
         run: pip install -r requirements.txt
 
+      - name: Pull data
+        run: |
+          dvc remote modify origin --local auth basic
+          dvc remote modify origin --local user ${{ secrets.DAGSHUB_USERNAME }}
+          dvc remote modify origin --local password ${{ secrets.DAGSHUB_TOKEN }}
+          dvc pull -r origin
+
       - name: Run processing and training code 
         run: python training/src/main.py
-        
+
       - name: Run training tests
         run: pytest training/tests
 
