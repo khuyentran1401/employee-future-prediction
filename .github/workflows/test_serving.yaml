@@ -1,0 +1,45 @@
+name: Test serving
+on: [push]
+jobs:
+  checkout:
+    name: Run tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout 
+        id: checkout
+        uses: actions/checkout@v2
+
+      - name: Environment setup
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+          cache: pip
+
+      - name: Cache
+        uses: actions/cache@v2
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: ${{ runner.os }}-pip-
+        
+      - name: Install packages
+        run: pip install bentoml==1.0.0a7
+
+      - name: Login to Heroku
+        env:
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+        run: heroku container:login
+
+      - name: Create a Heroku app
+        run: |
+          APP_NAME=employee-app-mty1mzc3njm1mqo
+          heroku create $APP_NAME
+
+      - name: Go to docker directory
+        run: cd $(find ~/bentoml/bentos/predict_employee/ -type d -maxdepth 1 -mindepth 1)/env/docker
+
+      - name: Containerize Bentos and push it to the Heroku app
+        run: heroku container:push web --app $APP_NAME  --context-path=../..
+
+      - name: Release the app
+        run: heroku container:release web --app $APP_NAME
