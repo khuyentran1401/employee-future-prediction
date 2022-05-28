@@ -26,7 +26,7 @@ def rename_columns(X: pd.DataFrame):
     return X
 
 
-@hydra.main(version_base=None, config_path="../config", config_name="main")
+@hydra.main(version_base=None, config_path="../../config", config_name="main")
 def process_data(config: DictConfig):
     """Function to process the data"""
 
