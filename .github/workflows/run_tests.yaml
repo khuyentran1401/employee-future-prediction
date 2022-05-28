@@ -24,6 +24,6 @@ jobs:
       - name: Serve the app locally and run app tests
         run: |
           bentoml serve ./application/src/create_service.py:service  & 
-          sleep 2
+          sleep 10
           pytest application/tests
           kill -9 `lsof -i:3000 -t`
