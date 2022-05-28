@@ -21,8 +21,8 @@ jobs:
       - name: Run training tests
         run: pytest training/tests
 
-      - name: Serve the app locally
-        run: bentoml serve ./application/src/create_service.py:service  
-
-      - name: Run app tests
-        run: pytest application/tests
+      - name: Serve the app locally and run app tests
+        run: |
+          bentoml serve ./application/src/create_service.py:service  
+          pytest application/tests
+          kill -9 `lsof -i:3000 -t`
