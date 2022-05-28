@@ -13,6 +13,7 @@ jobs:
         uses: actions/setup-python@v2
         with:
           python-version: 3.8
+          cache: pip
         
       - name: Install packages
         run: pip install -r requirements.txt
@@ -21,7 +22,7 @@ jobs:
         run: pytest training/tests
 
       - name: Serve the app locally
-        run: bentoml serve training/src/create_service.py:service --reload 
+        run: bentoml serve ./application/src/create_service.py:service  
 
       - name: Run app tests
         run: pytest application/tests
