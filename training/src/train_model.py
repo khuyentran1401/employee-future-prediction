@@ -5,19 +5,15 @@ warnings.filterwarnings(action="ignore")
 from functools import partial
 from typing import Callable
 
-import bentoml
 import hydra
-import mlflow
+import joblib
 import numpy as np
 import pandas as pd
-from helper import BaseLogger
 from hydra.utils import to_absolute_path as abspath
 from hyperopt import STATUS_OK, Trials, fmin, hp, tpe
 from omegaconf import DictConfig
-from sklearn.metrics import accuracy_score, f1_score
+from sklearn.metrics import accuracy_score
 from xgboost import XGBClassifier
-
-logger = BaseLogger()
 
 
 def load_data(path: DictConfig):
@@ -81,72 +77,36 @@ def optimize(objective: Callable, space: dict):
     return best_model
 
 
-def predict(model: XGBClassifier, X_test: pd.DataFrame):
-    return model.predict(X_test)
-
-
-def log_params(model: XGBClassifier, features: list):
-    logger.log_params({"model_class": type(model).__name__})
-    model_params = model.get_params()
-
-    for arg, value in model_params.items():
-        logger.log_params({arg: value})
-
-    logger.log_params({"features": features})
-
-
-def log_metrics(**metrics: dict):
-    logger.log_metrics(metrics)
-
-
 @hydra.main(version_base=None, config_path="../../config", config_name="main")
 def train(config: DictConfig):
     """Function to train the model"""
 
-    mlflow.set_tracking_uri(config.mlflow_tracking_ui)
+    X_train, X_test, y_train, y_test = load_data(config.processed)
 
-    with mlflow.start_run():
+    # Define space
+    space = {
+        "max_depth": hp.quniform("max_depth", **config.model.max_depth),
+        "gamma": hp.uniform("gamma", **config.model.gamma),
+        "reg_alpha": hp.quniform("reg_alpha", **config.model.reg_alpha),
+        "reg_lambda": hp.uniform("reg_lambda", **config.model.reg_lambda),
+        "colsample_bytree": hp.uniform(
+            "colsample_bytree", **config.model.colsample_bytree
+        ),
+        "min_child_weight": hp.quniform(
+            "min_child_weight", **config.model.min_child_weight
+        ),
+        "n_estimators": config.model.n_estimators,
+        "seed": config.model.seed,
+    }
+    objective = partial(
+        get_objective, X_train, y_train, X_test, y_test, config
+    )
 
-        X_train, X_test, y_train, y_test = load_data(config.processed)
+    # Find best model
+    best_model = optimize(objective, space)
 
-        # Define space
-        space = {
-            "max_depth": hp.quniform("max_depth", **config.model.max_depth),
-            "gamma": hp.uniform("gamma", **config.model.gamma),
-            "reg_alpha": hp.quniform("reg_alpha", **config.model.reg_alpha),
-            "reg_lambda": hp.uniform("reg_lambda", **config.model.reg_lambda),
-            "colsample_bytree": hp.uniform(
-                "colsample_bytree", **config.model.colsample_bytree
-            ),
-            "min_child_weight": hp.quniform(
-                "min_child_weight", **config.model.min_child_weight
-            ),
-            "n_estimators": config.model.n_estimators,
-            "seed": config.model.seed,
-        }
-        objective = partial(
-            get_objective, X_train, y_train, X_test, y_test, config
-        )
-
-        # Find best model
-        best_model = optimize(objective, space)
-
-        # Predict
-        prediction = predict(best_model, X_test)
-
-        # Get metrics
-        f1 = f1_score(y_test, prediction)
-        print(f"F1 Score of this model is {f1}.")
-
-        accuracy = accuracy_score(y_test, prediction)
-        print(f"Accuracy Score of this model is {accuracy}.")
-
-        # Log parameters and metrics
-        log_params(best_model, config.process.features)
-        log_metrics(f1_score=f1, accuracy_score=accuracy)
-
-        # Save model
-        bentoml.picklable_model.save(config.model.name, best_model)
+    # Save model
+    joblib.dump(best_model, abspath(config.model.path))
 
 
 if __name__ == "__main__":

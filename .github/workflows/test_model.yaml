@@ -1,4 +1,4 @@
-name: Test training
+name: Test new model
 on:
   push:
     branches-ignore:
@@ -9,8 +9,8 @@ on:
       - application/**
       - .github/workflows/test_training.yaml
 jobs:
-  test_training:
-    name: Test training
+  test_model:
+    name: Test new model
     runs-on: ubuntu-latest
     steps:
       - name: Checkout 
@@ -38,16 +38,16 @@ jobs:
           dvc remote modify origin --local auth basic
           dvc remote modify origin --local user ${{ secrets.DAGSHUB_USERNAME }}
           dvc remote modify origin --local password ${{ secrets.DAGSHUB_TOKEN }}
-          dvc pull -r origin
-
-      - name: Run processing and training code 
-        run: python training/src/main.py
-        env:
-          MLFLOW_TRACKING_USERNAME: ${{ secrets.MLFLOW_TRACKING_USERNAME }}
-          MLFLOW_TRACKING_PASSWORD: ${{ secrets.MLFLOW_TRACKING_PASSWORD }}        
+          dvc pull -r origin process_data
 
       - name: Run training tests
         run: pytest training/tests
+
+      - name: Evaluate the model 
+        run: python training/src/evaluate_model.py
+        env:
+          MLFLOW_TRACKING_USERNAME: ${{ secrets.MLFLOW_TRACKING_USERNAME }}
+          MLFLOW_TRACKING_PASSWORD: ${{ secrets.MLFLOW_TRACKING_PASSWORD }}        
 
       - name: Serve the app locally and run app tests
         run: |
