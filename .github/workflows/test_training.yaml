@@ -1,5 +1,13 @@
 name: Test training
-on: [push]
+on:
+  push:
+    branches-ignore:
+      - master
+    paths:
+      - config/**
+      - training/**
+      - application/**
+      - .github/workflows/test_training.yaml
 jobs:
   test_training:
     name: Test training
