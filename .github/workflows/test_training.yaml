@@ -1,8 +1,8 @@
 name: Test training
 on: [push]
 jobs:
-  checkout:
-    name: Run tests
+  test_training:
+    name: Test training
     runs-on: ubuntu-latest
     steps:
       - name: Checkout 
