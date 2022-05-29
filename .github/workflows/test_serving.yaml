@@ -34,7 +34,7 @@ jobs:
           dvc remote modify origin --local user ${{ secrets.DAGSHUB_USERNAME }}
           dvc remote modify origin --local password ${{ secrets.DAGSHUB_TOKEN }}
           dvc pull -r origin
-          
+
       - name: Run processing and training code 
         run: python training/src/main.py
         env:
@@ -43,6 +43,9 @@ jobs:
 
       - name: Build Bentos
         run: bentoml build
+
+      - name: Go to Docker directory
+        run: cd $(find ~/bentoml/bentos/predict_employee/ -type d -maxdepth 1 -mindepth 1)/env/docker
       
       - name: Build, Push and Release a Docker container to Heroku. # Your custom step name
         uses: gonuit/heroku-docker-deploy@v1.3.3 # GitHub action name (leave it as it is).
@@ -64,7 +67,7 @@ jobs:
           # (Optional, default: "./")
           # Dockerfile directory.
           # For example, if you have a Dockerfile in the root of your project, leave it as follows:
-          dockerfile_directory: $(find ~/bentoml/bentos/predict_employee/ -type d -maxdepth 1 -mindepth 1)/env/docker
+          dockerfile_directory: ./
 
           # (Optional, default: "Dockerfile")
           # Dockerfile name.
