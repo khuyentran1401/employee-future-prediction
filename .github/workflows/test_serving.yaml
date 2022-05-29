@@ -1,14 +1,14 @@
 name: Test serving
-on: 
+on:
   push:
-    branches:    
+    branches:
       - master
 jobs:
   test_serving:
     name: Test serving
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout 
+      - name: Checkout
         id: checkout
         uses: actions/checkout@v2
 
@@ -17,14 +17,14 @@ jobs:
         with:
           python-version: 3.8
           cache: pip
-        
+
       - name: Cache
         uses: actions/cache@v2
         with:
           path: ~/.cache/pip
           key: ${{ runner.os }}-pip-${{ hashFiles('**/dev-requirements.txt') }}
           restore-keys: ${{ runner.os }}-pip-
-        
+
       - name: Install packages
         run: pip install -r dev-requirements.txt
 
@@ -35,20 +35,19 @@ jobs:
           dvc remote modify origin --local password ${{ secrets.DAGSHUB_TOKEN }}
           dvc pull -r origin
 
-      - name: Run processing and training code 
+      - name: Run processing and training code
         run: python training/src/main.py
         env:
           MLFLOW_TRACKING_USERNAME: ${{ secrets.MLFLOW_TRACKING_USERNAME }}
-          MLFLOW_TRACKING_PASSWORD: ${{ secrets.MLFLOW_TRACKING_PASSWORD }}   
+          MLFLOW_TRACKING_PASSWORD: ${{ secrets.MLFLOW_TRACKING_PASSWORD }}
 
       - name: Build Bentos
         run: bentoml build
 
-      - name: Go to Docker directory
+      - name: Set Docker directory
         run: |
-          cd $(find ~/bentoml/bentos/predict_employee/ -type d -maxdepth 1 -mindepth 1)/env/docker
-          ls
-      
+          echo "INPUT_DOCKERFILE_NAME=$(find ~/bentoml/bentos/predict_employee -type d -maxdepth 1 -mindepth 1)/env/docker/Dockerfile" >> $GITHUB_ENV
+
       - name: Build, Push and Release a Docker container to Heroku. # Your custom step name
         uses: gonuit/heroku-docker-deploy@v1.3.3 # GitHub action name (leave it as it is).
         with:
@@ -58,11 +57,11 @@ jobs:
           # If you don't want to use repository secrets (which is recommended) you can do:
           # email: my.email@example.com
           email: ${{ secrets.HEROKU_EMAIL }}
-          
+
           # Heroku API key associated with provided user's email.
           # Api Key is available under your Heroku account settings.
           heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
-          
+
           # Name of the heroku application to which the build is to be sent.
           heroku_app_name: employee-app-mty1mzc3njm1mqo
 
@@ -73,7 +72,7 @@ jobs:
 
           # (Optional, default: "Dockerfile")
           # Dockerfile name.
-          dockerfile_name: Dockerfile
+          # dockerfile_name: Dockerfile
 
           # (Optional, default: "web")
           # Select the process type for which you want the docker container to be uploaded.
