@@ -46,7 +46,7 @@ jobs:
 
       - name: Set Docker directory
         run: |
-          echo "INPUT_DOCKERFILE_NAME=$(find ~/bentoml/bentos/predict_employee -type d -maxdepth 1 -mindepth 1)/env/docker/Dockerfile" >> $GITHUB_ENV
+          echo "INPUT_DOCKERFILE_DIRECTORY=$(find ~/bentoml/bentos/predict_employee -type d -maxdepth 1 -mindepth 1)/env/docker/Dockerfile" >> $GITHUB_ENV
 
       - name: Build, Push and Release a Docker container to Heroku. # Your custom step name
         uses: gonuit/heroku-docker-deploy@v1.3.3 # GitHub action name (leave it as it is).
@@ -68,11 +68,11 @@ jobs:
           # (Optional, default: "./")
           # Dockerfile directory.
           # For example, if you have a Dockerfile in the root of your project, leave it as follows:
-          dockerfile_directory: ./
+          # dockerfile_directory: ./
 
           # (Optional, default: "Dockerfile")
           # Dockerfile name.
-          # dockerfile_name: Dockerfile
+          dockerfile_name: Dockerfile
 
           # (Optional, default: "web")
           # Select the process type for which you want the docker container to be uploaded.
