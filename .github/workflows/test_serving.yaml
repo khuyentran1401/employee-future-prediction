@@ -14,16 +14,29 @@ jobs:
         with:
           python-version: 3.8
           cache: pip
-
+        
       - name: Cache
         uses: actions/cache@v2
         with:
           path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/dev-requirements.txt') }}
           restore-keys: ${{ runner.os }}-pip-
         
       - name: Install packages
-        run: pip install bentoml==1.0.0a7
+        run: pip install -r dev-requirements.txt
+
+      - name: Pull data
+        run: |
+          dvc remote modify origin --local auth basic
+          dvc remote modify origin --local user ${{ secrets.DAGSHUB_USERNAME }}
+          dvc remote modify origin --local password ${{ secrets.DAGSHUB_TOKEN }}
+          dvc pull -r origin
+
+      - name: Run processing and training code 
+        run: python training/src/main.py
+        env:
+          MLFLOW_TRACKING_USERNAME: ${{ secrets.MLFLOW_TRACKING_USERNAME }}
+          MLFLOW_TRACKING_PASSWORD: ${{ secrets.MLFLOW_TRACKING_PASSWORD }}   
 
       - name: Login to Heroku
         env:

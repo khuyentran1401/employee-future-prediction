@@ -3,7 +3,7 @@
 install: 
 	@echo "Installing..."
 	poetry install
-	pip install -r requirements.txt
+	pip install -r dev-requirements.txt
 
 activate:
 	@echo "Activating virtual environment"
