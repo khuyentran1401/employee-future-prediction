@@ -38,7 +38,7 @@ jobs:
           dvc remote modify origin --local auth basic
           dvc remote modify origin --local user ${{ secrets.DAGSHUB_USERNAME }}
           dvc remote modify origin --local password ${{ secrets.DAGSHUB_TOKEN }}
-          dvc pull -r origin
+          dvc pull -r origin process_data train_model
 
       - name: Run and save model 
         run: python training/src/evaluate_model.py
