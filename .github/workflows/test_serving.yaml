@@ -68,7 +68,7 @@ jobs:
           # (Optional, default: "./")
           # Dockerfile directory.
           # For example, if you have a Dockerfile in the root of your project, leave it as follows:
-          dockerfile_directory: ${{ env.DOCKERFILE_DIRECTORY }}
+          dockerfile_directory: ~/${{ env.DOCKERFILE_DIRECTORY }}
 
           # (Optional, default: "Dockerfile")
           # Dockerfile name.
