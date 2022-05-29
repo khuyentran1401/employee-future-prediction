@@ -68,6 +68,7 @@ jobs:
 
       - name: Containerize Bentos and push it to the Heroku app
         run: |
+          ls
           APP_NAME=employee-app-mty1mzc3njm1mqo
           heroku container:push web --app $APP_NAME  --context-path=../..
 
