@@ -43,11 +43,13 @@ jobs:
 
       - name: Build Bentos
         run: bentoml build
-        
+
       - name: Login to Heroku
         env:
           HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-        run: heroku container:login
+        run: |
+          heroku login
+          heroku container:login
 
       - name: Create a Heroku app
         run: |
