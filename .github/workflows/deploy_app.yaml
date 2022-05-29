@@ -1,11 +1,16 @@
-name: Test serving
+name: Deploy App
 on:
   push:
     branches:
       - master
+    paths:
+      - config/**
+      - training/**
+      - application/**
+      - .github/workflows/deploy_app.yaml
 jobs:
-  test_serving:
-    name: Test serving
+  deploy_app:
+    name: Deploy App
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
