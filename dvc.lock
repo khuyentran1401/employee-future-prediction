@@ -4,7 +4,7 @@ stages:
     cmd: python training/src/process.py
     deps:
     - path: config/main.yaml
-      md5: 5db6650005ebf1225920e1164c3d9d19
+      md5: dc8cb4e5f6177129a32d0695ccdfee43
       size: 716
     - path: data/raw
       md5: 4fab2c71b869451ea58f8c4aeb16b2b3.dir
@@ -15,39 +15,39 @@ stages:
       size: 1433
     outs:
     - path: data/processed
-      md5: 51b8b1094218074679391fd59a18ed6f.dir
-      size: 153771
+      md5: 5961fa11f7aee4b7fee8bec728c5acf8.dir
+      size: 172411
       nfiles: 5
   train_model:
     cmd: python training/src/train_model.py
     deps:
     - path: config/main.yaml
-      md5: 5db6650005ebf1225920e1164c3d9d19
+      md5: dc8cb4e5f6177129a32d0695ccdfee43
       size: 716
     - path: data/processed
-      md5: 51b8b1094218074679391fd59a18ed6f.dir
-      size: 153771
+      md5: 5961fa11f7aee4b7fee8bec728c5acf8.dir
+      size: 172411
       nfiles: 5
     - path: training/src/train_model.py
       md5: aed2ac144f5709275c27cce037908853
       size: 3299
     outs:
     - path: models/xgboost
-      md5: d741a26165f4e49742d6a1fb86cac789
-      size: 22142
+      md5: b252eb12d2fc75377d3e8886fb89c7ad
+      size: 43948
   evaluate_model:
     cmd: python training/src/evaluate_model.py
     deps:
     - path: config/main.yaml
-      md5: 5db6650005ebf1225920e1164c3d9d19
+      md5: dc8cb4e5f6177129a32d0695ccdfee43
       size: 716
     - path: data/processed
-      md5: 51b8b1094218074679391fd59a18ed6f.dir
-      size: 153771
+      md5: 5961fa11f7aee4b7fee8bec728c5acf8.dir
+      size: 172411
       nfiles: 5
     - path: models/xgboost
-      md5: d741a26165f4e49742d6a1fb86cac789
-      size: 22142
+      md5: b252eb12d2fc75377d3e8886fb89c7ad
+      size: 43948
     - path: training/src/evaluate_model.py
       md5: a0c3e0b0bb08f7208d8ff4e782a38058
       size: 1957
