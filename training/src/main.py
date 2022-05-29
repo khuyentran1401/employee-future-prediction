@@ -1,7 +1,7 @@
 import hydra
+from evaluate_model import evaluate
 from process import process_data
 from train_model import train
-from evaluate_model import evaluate
 
 
 @hydra.main(version_base=None, config_path="../../config", config_name="main")
