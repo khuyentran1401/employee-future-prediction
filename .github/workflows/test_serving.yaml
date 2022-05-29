@@ -62,13 +62,11 @@ jobs:
         env:
           HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
         run: heroku container:login
-        
-      - name: Containerize Bentos and push it to the Heroku app
+
+      - name: Containerize Bentos, push it to the Heroku app, and release the app
         run: |
           cd $(find ~/bentoml/bentos/predict_employee/ -type d -maxdepth 1 -mindepth 1)/env/docker
           ls
           APP_NAME=employee-app-mty1mzc3njm1mqo
           heroku container:push web --app $APP_NAME  --context-path=../..
-
-      - name: Release the app
-        run: heroku container:release web --app $APP_NAME
+          heroku container:release web --app $APP_NAME
