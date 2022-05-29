@@ -43,7 +43,7 @@ jobs:
       - name: Run training tests
         run: pytest training/tests
 
-      - name: Evaluate the model 
+      - name: Run and save model 
         run: python training/src/evaluate_model.py
         env:
           MLFLOW_TRACKING_USERNAME: ${{ secrets.MLFLOW_TRACKING_USERNAME }}
