@@ -1,5 +1,8 @@
 name: Test serving
-on: [push]
+on: 
+  push:
+    branches:    
+      - master
 jobs:
   checkout:
     name: Run tests
@@ -38,6 +41,9 @@ jobs:
           MLFLOW_TRACKING_USERNAME: ${{ secrets.MLFLOW_TRACKING_USERNAME }}
           MLFLOW_TRACKING_PASSWORD: ${{ secrets.MLFLOW_TRACKING_PASSWORD }}   
 
+      - name: Build Bentos
+        run: bentoml build
+        
       - name: Login to Heroku
         env:
           HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
