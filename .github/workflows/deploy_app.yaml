@@ -64,6 +64,8 @@ jobs:
       - name: Login to Heroku container
         run: heroku container:login
 
+      - name: Add permission
+
       - name: Containerize Bentos, push it to the Heroku app, and release the app
         run: |
           cd $(find ~/bentoml/bentos/predict_employee/ -type d -maxdepth 1 -mindepth 1)/env/docker
