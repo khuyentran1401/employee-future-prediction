@@ -12,6 +12,11 @@ jobs:
   deploy_app:
     name: Deploy App
     runs-on: ubuntu-latest
+    env:
+      HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+      HEROKU_EMAIL: ${{ secrets.HEROKU_EMAIL }}
+      MLFLOW_TRACKING_USERNAME: ${{ secrets.MLFLOW_TRACKING_USERNAME }}
+      MLFLOW_TRACKING_PASSWORD: ${{ secrets.MLFLOW_TRACKING_PASSWORD }} 
     steps:
       - name: Checkout
         id: checkout
@@ -41,10 +46,7 @@ jobs:
           dvc pull -r origin process_data train_model
 
       - name: Run and save model 
-        run: python training/src/evaluate_model.py
-        env:
-          MLFLOW_TRACKING_USERNAME: ${{ secrets.MLFLOW_TRACKING_USERNAME }}
-          MLFLOW_TRACKING_PASSWORD: ${{ secrets.MLFLOW_TRACKING_PASSWORD }}  
+        run: python training/src/evaluate_model.py 
 
       - name: Build Bentos
         run: bentoml build
@@ -59,13 +61,7 @@ jobs:
               login $HEROKU_EMAIL
               password $HEROKU_API_KEY
           EOF
-        env:
-          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-          HEROKU_EMAIL: ${{ secrets.HEROKU_EMAIL }}
-
       - name: Login to Heroku container
-        env:
-          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
         run: heroku container:login
 
       - name: Containerize Bentos, push it to the Heroku app, and release the app
