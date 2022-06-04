@@ -1,44 +1,7 @@
-import joblib
-import pandas as pd
+import json
+
+import requests
 import streamlit as st
-from hydra import compose, initialize
-from hydra.utils import to_absolute_path as abspath
-from patsy import dmatrix
-
-with initialize(version_base=None, config_path="../../config"):
-    config = compose(config_name="main")
-    FEATURES = config.process.features
-    MODEL_PATH = abspath(config.model.path)
-
-
-def add_dummy_data(df: pd.DataFrame):
-    """Add dummy rows so that patsy can create features similar to the train dataset"""
-    rows = {
-        "City": ["Bangalore", "New Delhi", "Pune"],
-        "Gender": ["Male", "Female", "Female"],
-        "EverBenched": ["Yes", "Yes", "No"],
-        "PaymentTier": [0, 0, 0],
-        "Age": [0, 0, 0],
-        "ExperienceInCurrentDomain": [0, 0, 0],
-    }
-    dummy_df = pd.DataFrame(rows)
-    return pd.concat([df, dummy_df])
-
-
-def rename_columns(X: pd.DataFrame):
-    X.columns = X.columns.str.replace("[", "_", regex=True).str.replace(
-        "]", "", regex=True
-    )
-    return X
-
-
-def transform_data(df: pd.DataFrame):
-    """Transform the data"""
-    dummy_df = add_dummy_data(df)
-    feature_str = " + ".join(FEATURES)
-    dummy_X = dmatrix(f"{feature_str} - 1", dummy_df, return_type="dataframe")
-    dummy_X = rename_columns(dummy_X)
-    return dummy_X.iloc[0, :].values.reshape(1, -1)
 
 
 def get_inputs():
@@ -69,27 +32,21 @@ def get_inputs():
     return data
 
 
-def load_model():
-    return joblib.load(MODEL_PATH)
-
-
-def predict(data: dict):
-    """Transform the data then make predictions"""
-    df = pd.DataFrame(data, index=[0])
-    df = transform_data(df)
-    model = load_model()
-    result = model.predict(df)[0]
-    return result
-
-
 def write_predictions(data: dict):
     if st.button("Will this employee leave in 2 years?"):
+        data_json = json.dumps(data)
 
-        prediction = predict(data)
-        if prediction == 0:
+        prediction = requests.post(
+            "https://employee-predict-1.herokuapp.com/predict",
+            headers={"content-type": "application/json"},
+            data=data_json,
+        ).text[0]
+
+        if prediction == "0":
             st.write("This employee is predicted stay more than two years.")
         else:
             st.write("This employee is predicted to leave in two years.")
+
 
 def main():
     data = get_inputs()
