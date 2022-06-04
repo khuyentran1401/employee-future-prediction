@@ -8,3 +8,4 @@ dvc==2.10.2
 pydantic==1.9.1
 pytest==7.1.2
 bentoml==1.0.0a7
+joblib==1.1.0
