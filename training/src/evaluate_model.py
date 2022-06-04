@@ -69,9 +69,6 @@ def evaluate(config: DictConfig):
         log_params(model, config.process.features)
         log_metrics(f1_score=f1, accuracy_score=accuracy)
 
-        # Save model to BentoML
-        bentoml.picklable_model.save(config.model.name, model)
-
 
 if __name__ == "__main__":
     evaluate()
