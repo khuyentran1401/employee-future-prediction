@@ -2,7 +2,6 @@ import warnings
 
 warnings.filterwarnings(action="ignore")
 
-import bentoml
 import hydra
 import joblib
 import mlflow

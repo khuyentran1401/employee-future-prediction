@@ -14,9 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-      HEROKU_EMAIL: ${{ secrets.HEROKU_EMAIL }}
-      MLFLOW_TRACKING_USERNAME: ${{ secrets.MLFLOW_TRACKING_USERNAME }}
-      MLFLOW_TRACKING_PASSWORD: ${{ secrets.MLFLOW_TRACKING_PASSWORD }} 
+      HEROKU_EMAIL: ${{ secrets.HEROKU_EMAIL }} 
     steps:
       - name: Checkout
         id: checkout
@@ -43,10 +41,10 @@ jobs:
           dvc remote modify origin --local auth basic
           dvc remote modify origin --local user ${{ secrets.DAGSHUB_USERNAME }}
           dvc remote modify origin --local password ${{ secrets.DAGSHUB_TOKEN }}
-          dvc pull -r origin process_data train_model
+          dvc pull -r origin train_model
 
-      - name: Run and save model 
-        run: python training/src/evaluate_model.py 
+      - name: Save model to BentoML local store
+        run: python application/src/save_model_to_bentoml.py
 
       - name: Build Bentos
         run: bentoml build
@@ -61,10 +59,9 @@ jobs:
               login $HEROKU_EMAIL
               password $HEROKU_API_KEY
           EOF
+        
       - name: Login to Heroku container
         run: heroku container:login
-
-      - name: Add permission
 
       - name: Containerize Bentos, push it to the Heroku app, and release the app
         run: |
