@@ -2,7 +2,6 @@ import warnings
 
 warnings.filterwarnings(action="ignore")
 
-import bentoml
 import hydra
 import joblib
 import mlflow
@@ -68,9 +67,6 @@ def evaluate(config: DictConfig):
         # Log metrics
         log_params(model, config.process.features)
         log_metrics(f1_score=f1, accuracy_score=accuracy)
-
-        # Save model to BentoML
-        bentoml.picklable_model.save(config.model.name, model)
 
 
 if __name__ == "__main__":
