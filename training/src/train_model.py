@@ -54,7 +54,6 @@ def get_objective(
         early_stopping_rounds=config.model.early_stopping_rounds,
     )
     prediction = model.predict(X_test.values)
-    print(prediction)
     accuracy = accuracy_score(y_test, prediction)
     print("SCORE:", accuracy)
     return {"loss": -accuracy, "status": STATUS_OK, "model": model}
