@@ -8,7 +8,7 @@ on:
       - .github/workflows/test_training.yaml
 jobs:
   test_model:
-    name: Test code
+    name: Test processed code and model
     runs-on: ubuntu-latest
     steps:
       - name: Checkout 
@@ -38,7 +38,7 @@ jobs:
           dvc remote modify origin --local password ${{ secrets.DAGSHUB_TOKEN }}
           dvc pull -r origin train_model
 
-      - name: Run training tests
+      - name: Test processed code and ML model
         run: pytest training/tests
 
       - name: Save model to BentoML local store
