@@ -47,7 +47,6 @@ def write_predictions(data: dict):
         else:
             st.write("This employee is predicted to leave in two years.")
 
-
 def main():
     data = get_inputs()
     write_predictions(data)
