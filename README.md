@@ -4,9 +4,9 @@
 In a data science team, it is common to continuously try to find a better model than the existing one in production. It is important to make sure the service doesn't break when the new model is deployed. 
 
 This project demonstrates how to use DagsHub and GitHub Actions to:
-- automatically test a pull request from a team member
-- merge a pull request when all tests passed
-- deploy the ML model to the existing service
+- automatically test a pull request from a team member.
+- merge a pull request when all tests passed.
+- deploy the ML model to the existing service.
 
 ![](https://cdn-images-1.medium.com/max/800/1*VZLOx6sCq9_Dj1-44mxKOQ.png)
 
