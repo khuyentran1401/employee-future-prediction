@@ -5,30 +5,27 @@ warnings.filterwarnings(action="ignore")
 from functools import partial
 from typing import Callable
 
-import hydra
 import joblib
 import numpy as np
 import pandas as pd
-from hydra.utils import to_absolute_path as abspath
+from helper import load_config
 from hyperopt import STATUS_OK, Trials, fmin, hp, tpe
 from omegaconf import DictConfig
+from prefect import flow, get_run_logger, task
 from sklearn.metrics import accuracy_score
 from xgboost import XGBClassifier
 
 
-def load_data(path: DictConfig):
-    X_train = pd.read_csv(abspath(path.X_train.path))
-    X_test = pd.read_csv(abspath(path.X_test.path))
-    y_train = pd.read_csv(abspath(path.y_train.path))
-    y_test = pd.read_csv(abspath(path.y_test.path))
-    return X_train, X_test, y_train, y_test
+@task
+def load_processed_data(path: DictConfig):
+    data = {}
+    for name in ["X_train", "X_test", "y_train", "y_test"]:
+        data[name] = pd.read_csv(path[name])
+    return data
 
 
 def get_objective(
-    X_train: pd.DataFrame,
-    y_train: pd.DataFrame,
-    X_test: pd.DataFrame,
-    y_test: pd.DataFrame,
+    data: dict,
     config: DictConfig,
     space: dict,
 ):
@@ -44,46 +41,34 @@ def get_objective(
         colsample_bytree=int(space["colsample_bytree"]),
     )
 
-    evaluation = [(X_train, y_train), (X_test, y_test)]
+    evaluation = [
+        (data["X_train"], data["y_train"]),
+        (data["X_test"], data["y_test"]),
+    ]
 
     model.fit(
-        X_train,
-        y_train,
+        data["X_train"],
+        data["y_train"],
         eval_set=evaluation,
         eval_metric=config.model.eval_metric,
         early_stopping_rounds=config.model.early_stopping_rounds,
     )
-    prediction = model.predict(X_test.values)
-    accuracy = accuracy_score(y_test, prediction)
-    print("SCORE:", accuracy)
+    prediction = model.predict(data["X_test"].values)
+    accuracy = accuracy_score(data["y_test"], prediction)
+
+    logger = get_run_logger()
+    logger.info("SCORE:" + str(accuracy))
     return {"loss": -accuracy, "status": STATUS_OK, "model": model}
 
 
-def optimize(objective: Callable, space: dict):
-    trials = Trials()
-    best_hyperparams = fmin(
-        fn=objective,
-        space=space,
-        algo=tpe.suggest,
-        max_evals=100,
-        trials=trials,
-    )
-    print("The best hyperparameters are : ", "\n")
-    print(best_hyperparams)
-    best_model = trials.results[
-        np.argmin([r["loss"] for r in trials.results])
-    ]["model"]
-    return best_model
+@task
+def objective_fn(get_objective: Callable, data, config):
+    return partial(get_objective, data, config)
 
 
-@hydra.main(version_base=None, config_path="../../config", config_name="main")
-def train(config: DictConfig):
-    """Function to train the model"""
-
-    X_train, X_test, y_train, y_test = load_data(config.processed)
-
-    # Define space
-    space = {
+@task
+def get_space(config):
+    return {
         "max_depth": hp.quniform("max_depth", **config.model.max_depth),
         "gamma": hp.uniform("gamma", **config.model.gamma),
         "reg_alpha": hp.quniform("reg_alpha", **config.model.reg_alpha),
@@ -97,15 +82,50 @@ def train(config: DictConfig):
         "n_estimators": config.model.n_estimators,
         "seed": config.model.seed,
     }
-    objective = partial(
-        get_objective, X_train, y_train, X_test, y_test, config
+
+
+@task
+def optimize(objective: Callable, space: dict):
+    trials = Trials()
+    best_hyperparams = fmin(
+        fn=objective,
+        space=space,
+        algo=tpe.suggest,
+        max_evals=100,
+        trials=trials,
     )
+    logger = get_run_logger()
+    logger.info("The best hyperparameters are : " + "\n")
+    logger.info(best_hyperparams)
+    best_model = trials.results[
+        np.argmin([r["loss"] for r in trials.results])
+    ]["model"]
+    return best_model
+
+
+@task
+def save_model(best_model, config):
+    joblib.dump(best_model, config.model.path)
+
+
+@flow
+def train():
+    """Function to train the model"""
+
+    config = load_config()
+    data = load_processed_data(config.processed)
+
+    # Define space
+    space = get_space(config)
+
+    # Get objective
+    objective = objective_fn(get_objective, data, config)
 
     # Find best model
     best_model = optimize(objective, space)
 
     # Save model
-    joblib.dump(best_model, abspath(config.model.path))
+    save_model(best_model, config)
 
 
 if __name__ == "__main__":
