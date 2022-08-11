@@ -1,1 +1,0 @@
-web: chmod u+x /opt/conda/lib/python3.8/site-packages/.wh.certifi-2021.10.8-py3.8.egg-info

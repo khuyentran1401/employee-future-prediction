@@ -2,71 +2,59 @@ import warnings
 
 warnings.filterwarnings(action="ignore")
 
-import hydra
 import joblib
-import mlflow
+import numpy as np
 import pandas as pd
-from helper import BaseLogger
-from hydra.utils import to_absolute_path as abspath
+from helper import load_config
 from omegaconf import DictConfig
+from prefect import flow, get_run_logger, task
 from sklearn.metrics import accuracy_score, f1_score
 from xgboost import XGBClassifier
 
-logger = BaseLogger()
 
-
+@task
 def load_data(path: DictConfig):
-    X_test = pd.read_csv(abspath(path.X_test.path))
-    y_test = pd.read_csv(abspath(path.y_test.path))
+    X_test = pd.read_csv(path.X_test)
+    y_test = pd.read_csv(path.y_test)
     return X_test, y_test
 
 
+@task
 def load_model(model_path: str):
     return joblib.load(model_path)
 
 
+@task
 def predict(model: XGBClassifier, X_test: pd.DataFrame):
     return model.predict(X_test)
 
 
-def log_params(model: XGBClassifier, features: list):
-    logger.log_params({"model_class": type(model).__name__})
-    model_params = model.get_params()
+@task
+def get_metrics(y_test: np.array, prediction: np.array):
+    logger = get_run_logger()
 
-    for arg, value in model_params.items():
-        logger.log_params({arg: value})
+    f1 = f1_score(y_test, prediction)
+    logger.info(f"F1 Score of this model is {f1}.")
 
-    logger.log_params({"features": features})
-
-
-def log_metrics(**metrics: dict):
-    logger.log_metrics(metrics)
+    accuracy = accuracy_score(y_test, prediction)
+    logger.info(f"Accuracy Score of this model is {accuracy}.")
 
 
-@hydra.main(version_base=None, config_path="../../config", config_name="main")
-def evaluate(config: DictConfig):
-    mlflow.set_tracking_uri(config.mlflow_tracking_ui)
+@flow
+def evaluate():
 
-    with mlflow.start_run():
+    config = load_config()
 
-        # Load data and model
-        X_test, y_test = load_data(config.processed)
+    # Load data and model
+    X_test, y_test = load_data(config.processed)
 
-        model = load_model(abspath(config.model.path))
+    model = load_model(config.model.path)
 
-        # Get predictions
-        prediction = predict(model, X_test)
+    # Get predictions
+    prediction = predict(model, X_test)
 
-        # Get metrics
-        f1 = f1_score(y_test, prediction)
-        print(f"F1 Score of this model is {f1}.")
-
-        accuracy = accuracy_score(y_test, prediction)
-        print(f"Accuracy Score of this model is {accuracy}.")
-
-        # Log metrics
-        log_params(model, config.process.features)
-        log_metrics(f1_score=f1, accuracy_score=accuracy)
+    # Get metrics
+    get_metrics(y_test, prediction)
 
 
 if __name__ == "__main__":
