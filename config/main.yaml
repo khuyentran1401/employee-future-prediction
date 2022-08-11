@@ -8,18 +8,10 @@ raw:
 
 processed:
   dir: data/processed
-  X_train: 
-    name: X_train.csv
-    path: ${processed.dir}/${processed.X_train.name}
-  X_test:
-    name: X_test.csv
-    path: ${processed.dir}/${processed.X_test.name}
-  y_train: 
-    name: y_train.csv
-    path: ${processed.dir}/${processed.y_train.name}
-  y_test:
-    name: y_test.csv
-    path: ${processed.dir}/${processed.y_test.name}  
+  X_train: ${processed.dir}/X_train.csv
+  X_test: ${processed.dir}/X_test.csv
+  y_train: ${processed.dir}/y_train.csv
+  y_test: ${processed.dir}/y_test.csv
 
 final:
   dir: data/final
