@@ -4,6 +4,7 @@ import pandas as pd
 from bentoml.io import JSON, NumpyNdarray
 from hydra import compose, initialize
 from patsy import dmatrix
+from prefect import flow
 from pydantic import BaseModel
 
 with initialize(version_base=None, config_path="../../config"):
@@ -59,6 +60,7 @@ service = bentoml.Service("predict_employee", runners=[model])
 
 
 @service.api(input=JSON(pydantic_model=Employee), output=NumpyNdarray())
+@flow
 def predict(employee: Employee) -> np.ndarray:
     """Transform the data then make predictions"""
     df = pd.DataFrame(employee.dict(), index=[0])

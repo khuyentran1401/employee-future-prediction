@@ -3,7 +3,7 @@ defaults:
   - model: model1
   - _self_
 
-raw: 
+raw:
   path: data/raw/Employee.csv
 
 processed:
@@ -17,11 +17,5 @@ final:
   dir: data/final
   name: final.csv
   path: ${final.dir}/${final.name}
-
-model:
-  dir: models
-  name: xgboost
-  path: ${model.dir}/${model.name}
-
 
 mlflow_tracking_ui: https://dagshub.com/khuyentran1401/employee-future-prediction.mlflow
